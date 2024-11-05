@@ -1,0 +1,33 @@
+version: '3.7'
+
+networks:
+   backend:
+    name: backend
+
+services:
+  api:
+    container_name: api
+    restart: unless-stopped
+    build:
+      context: ./server/api
+    command: sh -c 'echo "running migration..."; cd /api ; yarn migrate; yarn serve'
+    depends_on: 
+      - db
+    ports:
+      - "4200:4200"
+    networks:
+      - backend
+
+  db:
+    image: postgres:17.0-alpine3.20
+    restart: always
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=dev
+      - POSTGRES_DB=lyrics_projection
+    ports:
+      - '5432:5432'
+    volumes: 
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - backend
