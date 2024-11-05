@@ -4,7 +4,36 @@ import express, {
 import db from "../knex/db";
 const router = express.Router();
 
-// Get all categories
+/**
+ * @swagger
+ * tags:
+ *   name: LyricCategories
+ *   description: API for managing lyric categories
+ */
+
+/**
+ * @swagger
+ * /lyricsc:
+ *   get:
+ *     summary: Retrieve all lyric categories
+ *     tags: [LyricCategories]
+ *     responses:
+ *       200:
+ *         description: A list of lyric categories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: integer
+ *                   category:
+ *                     type: string
+ *       500:
+ *         description: Server error
+ */
 router.get("/", async (req, res) => {
     db("lyric-category")
         .select("_id", "category")
@@ -18,7 +47,28 @@ router.get("/", async (req, res) => {
         });
 });
 
-// Submit category
+/**
+ * @swagger
+ * /lyricsc:
+ *   post:
+ *     summary: Create a new lyric category
+ *     tags: [LyricCategories]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               category:
+ *                 type: string
+ *                 description: Category name for lyrics
+ *     responses:
+ *       201:
+ *         description: Category created successfully
+ *       500:
+ *         description: Server error
+ */
 router.post("/", async (req, res) => {
     const lyricC = {
         category: req.body.category,
@@ -37,7 +87,27 @@ router.post("/", async (req, res) => {
         });
 });
 
-// Delete specific category
+/**
+ * @swagger
+ * /lyricsc/{recievedCategory}:
+ *   delete:
+ *     summary: Delete a specific lyric category
+ *     tags: [LyricCategories]
+ *     parameters:
+ *       - in: path
+ *         name: recievedCategory
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Name of the category to delete
+ *     responses:
+ *       200:
+ *         description: Lyric category deleted successfully
+ *       404:
+ *         description: Category not found
+ *       500:
+ *         description: Server error
+ */
 router.delete("/:recievedCategory", async (req, res) => {
     db("lyric-category")
         .where("category", "=", req.params.recievedCategory)

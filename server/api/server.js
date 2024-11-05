@@ -1,4 +1,3 @@
-// Importing required modules
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -6,39 +5,53 @@ import morgan from 'morgan';
 import {
     require
 } from 'app-root-path';
-//let knex_config = require('./knex/knexfile');
-//module.exports = require('knex')(knex_config);
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
-// Defining port
+// Define port
 const port = process.env.PORT || 4200;
 
-// Defining app
+// Define app
 const app = express();
 
-// Defining middlewares
+// Middlewares
 app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use(cors());
-
 app.set('view engine', 'html');
-
-// Static folder
 app.use(express.static(__dirname + '/views/'));
 
-// // Defining the Routes
+// Swagger configuration
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'API Documentation',
+            version: '1.0.0',
+            description: 'API for Lyrics and Playlists',
+        },
+        servers: [{
+            url: `http://localhost:${port}`
+        }],
+    },
+    apis: ['./routes/*.js'], // Files containing annotations as above
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Routes
 app.use('/api', require('./routes/index'));
-// // Lyrics route
 app.use('/lyrics', require('./routes/lyrics'));
-// // Only lyrics indexes and titles
 app.use('/lyricsit', require('./routes/lyricsit'));
-// // Lyric categories
 app.use('/lyricsc', require('./routes/lyricsC'));
-// // Playlists
 app.use('/playlists', require('./routes/playlists'));
-// // Application state
 app.use('/state', require('./routes/appState'));
 
-// Listening to port
-app.listen(port);
-console.log(`Listening On http://db:${port}/api`);
+// Start server
+app.listen(port, () => {
+    console.log(`Listening on http://localhost:${port}/api`);
+    console.log(`API docs available at http://localhost:${port}/api-docs`);
+});
+
 module.exports = app;
