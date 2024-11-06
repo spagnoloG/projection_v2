@@ -1,6 +1,8 @@
 format:
 	@echo "Formatting code..."
-	@find ./server -type f -name '*.js' -not -path '*/node_modules/*' -exec js-beautify -r {} \;
+	@npx prettier --write "./server/**/*.js" --ignore-path 'node_modules'
+	@npx prettier --write "./frontend/**/*.tsx" --ignore-path 'node_modules'
+	@npx prettier --write "./frontend/**/*.ts" --ignore-path 'node_modules'
 
 rebuild:
 	@echo "Rebuilding docker images..."

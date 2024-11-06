@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -21,8 +21,8 @@ import { UserTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-
-import type { UserProps } from '../user-table-row';
+import { FetchLyrics } from '../../../services/apiService'
+import type { Lyric, LyricsResponse } from '../../../types';
 
 // ----------------------------------------------------------------------
 
@@ -31,8 +31,28 @@ export function UserView() {
 
   const [filterName, setFilterName] = useState('');
 
-  const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
+
+  const [lyrics, setLyrics] = useState<Lyric[] | null>(null);
+  const [loadLyricsError, setLoadLyricsError] = useState<string | null>(null);
+  const [lyricsLen, setLyricsLen] = useState<number>(0)
+
+  useEffect(() => {
+    const loadLyrics = async () => {
+      try {
+        const result = await FetchLyrics();
+        setLyrics(result);
+        setLyricsLen(result.length)
+      } catch (err) {
+        setLoadLyricsError(err.message);
+      }
+    };
+    loadLyrics();
+  }, []);
+
+  console.log(lyrics);
+
+  const dataFiltered: Lyric[] = applyFilter({
+    inputData: lyrics ?? [],
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -80,12 +100,9 @@ export function UserView() {
                   )
                 }
                 headLabel={[
-                  { id: 'name', label: 'Name' },
-                  { id: 'company', label: 'Company' },
-                  { id: 'role', label: 'Role' },
-                  { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
-                  { id: '' },
+                  { id: 'title', label: 'Naslov' },
+                  { id: 'categories', label: 'Kategorije' },
+                  { id: 'actions', label: 'Akcije'}
                 ]}
               />
               <TableBody>
@@ -96,10 +113,10 @@ export function UserView() {
                   )
                   .map((row) => (
                     <UserTableRow
-                      key={row.id}
+                      key={row._id}
                       row={row}
-                      selected={table.selected.includes(row.id)}
-                      onSelectRow={() => table.onSelectRow(row.id)}
+                      selected={table.selected.includes(row._id)}
+                      onSelectRow={() => table.onSelectRow(row._id)}
                     />
                   ))}
 
@@ -117,7 +134,7 @@ export function UserView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={lyricsLen}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
