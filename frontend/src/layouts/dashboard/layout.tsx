@@ -63,11 +63,7 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
                     [theme.breakpoints.up(layoutQuery)]: { display: 'none' },
                   }}
                 />
-                <NavMobile
-                  data={navData}
-                  open={navOpen}
-                  onClose={() => setNavOpen(false)}
-                />
+                <NavMobile data={navData} open={navOpen} onClose={() => setNavOpen(false)} />
               </>
             ),
           }}
@@ -76,9 +72,7 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
       /** **************************************
        * Sidebar
        *************************************** */
-      sidebarSection={
-        <NavDesktop data={navData} layoutQuery={layoutQuery} />
-      }
+      sidebarSection={<NavDesktop data={navData} layoutQuery={layoutQuery} />}
       /** **************************************
        * Footer
        *************************************** */

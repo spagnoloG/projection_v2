@@ -1,6 +1,4 @@
-import express, {
-    response
-} from "express";
+import express, { response } from "express";
 import db from "../knex/db";
 const router = express.Router();
 
@@ -35,16 +33,16 @@ const router = express.Router();
  *         description: Server error
  */
 router.get("/", async (req, res) => {
-    db("lyric-category")
-        .select("_id", "category")
-        .then((response) => {
-            res.status(200).json(response);
-        })
-        .catch((err) => {
-            res.status(500).json({
-                error: err,
-            });
-        });
+  db("lyric-category")
+    .select("_id", "category")
+    .then((response) => {
+      res.status(200).json(response);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: err,
+      });
+    });
 });
 
 /**
@@ -70,21 +68,21 @@ router.get("/", async (req, res) => {
  *         description: Server error
  */
 router.post("/", async (req, res) => {
-    const lyricC = {
-        category: req.body.category,
-    };
+  const lyricC = {
+    category: req.body.category,
+  };
 
-    db("lyric-category")
-        .insert(lyricC)
-        .then((result) => {
-            res.status(201).json(result);
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).json({
-                error: err,
-            });
-        });
+  db("lyric-category")
+    .insert(lyricC)
+    .then((result) => {
+      res.status(201).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
 });
 
 /**
@@ -109,28 +107,26 @@ router.post("/", async (req, res) => {
  *         description: Server error
  */
 router.delete("/:recievedCategory", async (req, res) => {
-    db("lyric-category")
-        .where("category", "=", req.params.recievedCategory)
-        .del(["_id"])
-        .then((result) => {
-            if (result.n === 0) {
-                res
-                    .status(404)
-                    .json({
-                        message: "No valid entry found for provided id"
-                    });
-            } else {
-                res.status(200).json({
-                    message: "Lyric successfully deleted!",
-                });
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).json({
-                error: err,
-            });
+  db("lyric-category")
+    .where("category", "=", req.params.recievedCategory)
+    .del(["_id"])
+    .then((result) => {
+      if (result.n === 0) {
+        res.status(404).json({
+          message: "No valid entry found for provided id",
         });
+      } else {
+        res.status(200).json({
+          message: "Lyric successfully deleted!",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
 });
 
 module.exports = router;

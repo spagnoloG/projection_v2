@@ -21,7 +21,7 @@ import { UserTableHead } from '../user-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import { FetchLyrics } from '../../../services/apiService'
+import { FetchLyrics } from '../../../services/apiService';
 import type { Lyric, LyricsResponse } from '../../../types';
 
 // ----------------------------------------------------------------------
@@ -31,17 +31,16 @@ export function UserView() {
 
   const [filterName, setFilterName] = useState('');
 
-
   const [lyrics, setLyrics] = useState<Lyric[] | null>(null);
   const [loadLyricsError, setLoadLyricsError] = useState<string | null>(null);
-  const [lyricsLen, setLyricsLen] = useState<number>(0)
+  const [lyricsLen, setLyricsLen] = useState<number>(0);
 
   useEffect(() => {
     const loadLyrics = async () => {
       try {
         const result = await FetchLyrics();
         setLyrics(result);
-        setLyricsLen(result.length)
+        setLyricsLen(result.length);
       } catch (err) {
         setLoadLyricsError(err.message);
       }
@@ -70,7 +69,7 @@ export function UserView() {
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
         >
-          Nova pesem 
+          Nova pesem
         </Button>
       </Box>
 
@@ -102,7 +101,7 @@ export function UserView() {
                 headLabel={[
                   { id: 'title', label: 'Naslov' },
                   { id: 'categories', label: 'Kategorije' },
-                  { id: 'actions', label: 'Akcije'}
+                  { id: 'actions', label: 'Akcije' },
                 ]}
               />
               <TableBody>

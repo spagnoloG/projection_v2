@@ -16,7 +16,6 @@ import type { Lyric } from '../../types';
 
 // ----------------------------------------------------------------------
 
-
 type LyricTableRowProps = {
   row: Lyric;
   selected: boolean;
@@ -43,18 +42,18 @@ export function UserTableRow({ row, selected, onSelectRow }: LyricTableRowProps)
 
         <TableCell component="th" scope="row">
           <Box gap={2} display="flex" alignItems="center">
-            <Avatar alt={row.title} src="/"/>
+            <Avatar alt={row.title} src="/" />
             {row.title}
           </Box>
         </TableCell>
 
-        <TableCell>{row.categories.join(", ")}</TableCell>
+        <TableCell>{row.categories.join(', ')}</TableCell>
         <TableCell align="right">
           <IconButton onClick={handleOpenPopover}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
-      </TableRow> 
+      </TableRow>
       <Popover
         open={!!openPopover}
         anchorEl={openPopover}

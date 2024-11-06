@@ -61,7 +61,7 @@ export function NavDesktop({
         ...sx,
       }}
     >
-      <NavContent data={data} slots={slots}/>
+      <NavContent data={data} slots={slots} />
     </Box>
   );
 }
@@ -99,7 +99,7 @@ export function NavMobile({
         },
       }}
     >
-      <NavContent data={data} slots={slots}/>
+      <NavContent data={data} slots={slots} />
     </Drawer>
   );
 }
@@ -165,7 +165,6 @@ export function NavContent({ data, slots, sx }: NavContentProps) {
       </Scrollbar>
 
       {slots?.bottomArea}
-
     </>
   );
 }

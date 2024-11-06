@@ -1,16 +1,16 @@
 export interface Lyric {
-    _id: string;
-    content: string;
-    title: string;
-    categories: string[];
+  _id: string;
+  content: string;
+  title: string;
+  categories: string[];
 }
 
 export interface LyricsResponse {
-    lyrics: Lyric[];
+  lyrics: Lyric[];
 }
 
 export type LyricRowProps = {
-    id: string;
-    title: string;
-    categories: string[];
+  id: string;
+  title: string;
+  categories: string[];
 };

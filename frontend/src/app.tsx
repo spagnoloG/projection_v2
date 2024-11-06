@@ -6,7 +6,6 @@ import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 
 import { ThemeProvider } from 'src/theme/theme-provider';
 
-
 // ----------------------------------------------------------------------
 
 export default function App() {

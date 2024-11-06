@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const appStateController = require('../controllers/appState')
+const appStateController = require("../controllers/appState");
 
 /**
  * @swagger
@@ -39,7 +39,7 @@ const appStateController = require('../controllers/appState')
  *       500:
  *         description: Server error
  */
-router.post('/', appStateController.app_state_on_init);
+router.post("/", appStateController.app_state_on_init);
 
 /**
  * @swagger
@@ -70,7 +70,7 @@ router.post('/', appStateController.app_state_on_init);
  *       500:
  *         description: Server error
  */
-router.get('/', appStateController.app_state_get_state);
+router.get("/", appStateController.app_state_get_state);
 
 /**
  * @swagger
@@ -106,6 +106,6 @@ router.get('/', appStateController.app_state_get_state);
  *       500:
  *         description: Server error
  */
-router.patch('/:stateId', appStateController.app_state_update_state);
+router.patch("/:stateId", appStateController.app_state_update_state);
 
 module.exports = router;

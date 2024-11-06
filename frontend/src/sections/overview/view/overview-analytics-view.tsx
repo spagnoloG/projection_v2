@@ -47,7 +47,6 @@ export function OverviewAnalyticsView() {
         <Grid xs={12} md={6} lg={4}>
           <AnalyticsOrderTimeline title="Zgodovina" list={_timeline} />
         </Grid>
-
       </Grid>
     </DashboardContent>
   );

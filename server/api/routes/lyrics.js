@@ -1,8 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const lyricsController = require('../controllers/lyrics')
-
+const lyricsController = require("../controllers/lyrics");
 
 /**
  * @swagger
@@ -41,7 +40,7 @@ const lyricsController = require('../controllers/lyrics')
  *       500:
  *         description: Server error
  */
-router.post('/', lyricsController.lyrics_new_lyric);
+router.post("/", lyricsController.lyrics_new_lyric);
 
 /**
  * @swagger
@@ -77,7 +76,7 @@ router.post('/', lyricsController.lyrics_new_lyric);
  *       500:
  *         description: Server error
  */
-router.get('/', lyricsController.lyrics_get_all_lyrics);
+router.get("/", lyricsController.lyrics_get_all_lyrics);
 
 /**
  * @swagger
@@ -100,7 +99,7 @@ router.get('/', lyricsController.lyrics_get_all_lyrics);
  *       500:
  *         description: Server error
  */
-router.get('/:lyricId', lyricsController.lyrics_get_specific_lyric);
+router.get("/:lyricId", lyricsController.lyrics_get_specific_lyric);
 
 /**
  * @swagger
@@ -138,7 +137,7 @@ router.get('/:lyricId', lyricsController.lyrics_get_specific_lyric);
  *       500:
  *         description: Server error
  */
-router.patch('/:lyricId', lyricsController.lyrics_update_lyric);
+router.patch("/:lyricId", lyricsController.lyrics_update_lyric);
 
 /**
  * @swagger
@@ -161,6 +160,6 @@ router.patch('/:lyricId', lyricsController.lyrics_update_lyric);
  *       500:
  *         description: Server error
  */
-router.delete('/:lyricId', lyricsController.lyrics_delete_lyric);
+router.delete("/:lyricId", lyricsController.lyrics_delete_lyric);
 
 module.exports = router;

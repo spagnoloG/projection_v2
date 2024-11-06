@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const playlistController = require('../controllers/playlists')
+const playlistController = require("../controllers/playlists");
 
 /**
  * @swagger
@@ -40,7 +40,7 @@ const playlistController = require('../controllers/playlists')
  *       500:
  *         description: Server error
  */
-router.post('/', playlistController.playlists_new_playlist);
+router.post("/", playlistController.playlists_new_playlist);
 
 /**
  * @swagger
@@ -76,7 +76,7 @@ router.post('/', playlistController.playlists_new_playlist);
  *       500:
  *         description: Server error
  */
-router.get('/', playlistController.playlists_get_all_playlists);
+router.get("/", playlistController.playlists_get_all_playlists);
 
 /**
  * @swagger
@@ -99,7 +99,7 @@ router.get('/', playlistController.playlists_get_all_playlists);
  *       500:
  *         description: Server error
  */
-router.get('/:playlistId', playlistController.playlists_get_specific_playlist);
+router.get("/:playlistId", playlistController.playlists_get_specific_playlist);
 
 /**
  * @swagger
@@ -135,7 +135,7 @@ router.get('/:playlistId', playlistController.playlists_get_specific_playlist);
  *       500:
  *         description: Server error
  */
-router.patch('/:playlistId', playlistController.playlists_update_playlist);
+router.patch("/:playlistId", playlistController.playlists_update_playlist);
 
 /**
  * @swagger
@@ -158,6 +158,6 @@ router.patch('/:playlistId', playlistController.playlists_update_playlist);
  *       500:
  *         description: Server error
  */
-router.delete('/:playlistId', playlistController.playlists_delete_playlist);
+router.delete("/:playlistId", playlistController.playlists_delete_playlist);
 
 module.exports = router;
