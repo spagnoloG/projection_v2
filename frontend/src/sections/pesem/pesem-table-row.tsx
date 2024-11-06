@@ -36,10 +36,6 @@ export function UserTableRow({ row, selected, onSelectRow }: LyricTableRowProps)
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
-        <TableCell padding="checkbox">
-          <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
-        </TableCell>
-
         <TableCell component="th" scope="row">
           <Box gap={2} display="flex" alignItems="center">
             <Avatar alt={row.title} src="/" />
@@ -79,12 +75,12 @@ export function UserTableRow({ row, selected, onSelectRow }: LyricTableRowProps)
         >
           <MenuItem onClick={handleClosePopover}>
             <Iconify icon="solar:pen-bold" />
-            Edit
+            Uredi
           </MenuItem>
 
           <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
             <Iconify icon="solar:trash-bin-trash-bold" />
-            Delete
+            Izbriši
           </MenuItem>
         </MenuList>
       </Popover>

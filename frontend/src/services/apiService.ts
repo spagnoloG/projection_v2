@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Lyric } from '../types';
+import { Lyric, LyricPost } from '../types';
 
 const API_BASE_URL = 'http://localhost:4200/';
 
@@ -32,6 +32,15 @@ export const FetchLyrics = async (): Promise<Lyric[]> => {
     return response.data.lyrics;
   } catch (error) {
     throw new Error('Failed to fetch lyrics');
+  }
+};
+
+export const PostLyric = async (lyric: LyricPost) => {
+  try {
+    const response = await apiClient.post('/lyrics', lyric);
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to post lyric');
   }
 };
 

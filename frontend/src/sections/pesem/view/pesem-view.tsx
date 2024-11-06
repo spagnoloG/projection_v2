@@ -16,17 +16,17 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import { TableNoData } from '../table-no-data';
-import { UserTableRow } from '../user-table-row';
-import { UserTableHead } from '../user-table-head';
+import { UserTableRow } from '../pesem-table-row';
+import { UserTableHead } from '../pesem-table-head';
 import { TableEmptyRows } from '../table-empty-rows';
-import { UserTableToolbar } from '../user-table-toolbar';
+import { UserTableToolbar } from '../pesem-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 import { FetchLyrics } from '../../../services/apiService';
-import type { Lyric, LyricsResponse } from '../../../types';
+import type { Lyric } from '../../../types';
 
 // ----------------------------------------------------------------------
 
-export function UserView() {
+export function PesemView() {
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
@@ -48,8 +48,6 @@ export function UserView() {
     loadLyrics();
   }, []);
 
-  console.log(lyrics);
-
   const dataFiltered: Lyric[] = applyFilter({
     inputData: lyrics ?? [],
     comparator: getComparator(table.order, table.orderBy),
@@ -67,6 +65,7 @@ export function UserView() {
         <Button
           variant="contained"
           color="inherit"
+          href="/nova-pesem"
           startIcon={<Iconify icon="mingcute:add-line" />}
         >
           Nova pesem

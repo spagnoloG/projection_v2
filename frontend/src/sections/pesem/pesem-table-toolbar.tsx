@@ -38,7 +38,7 @@ export function UserTableToolbar({ numSelected, filterName, onFilterName }: User
           fullWidth
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search user..."
+          placeholder="Išči pesmi..."
           startAdornment={
             <InputAdornment position="start">
               <Iconify width={20} icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
@@ -46,20 +46,6 @@ export function UserTableToolbar({ numSelected, filterName, onFilterName }: User
           }
           sx={{ maxWidth: 320 }}
         />
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <Iconify icon="solar:trash-bin-trash-bold" />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Iconify icon="ic:round-filter-list" />
-          </IconButton>
-        </Tooltip>
       )}
     </Toolbar>
   );

@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
 
-import { PesemView } from 'src/sections/pesem/view';
+import { NovaPesemView } from 'src/sections/nova-pesem/view';
 
 // ----------------------------------------------------------------------
 
@@ -10,10 +10,9 @@ export default function Page() {
   return (
     <>
       <Helmet>
-        <title> {`Pesmi - ${CONFIG.appName}`}</title>
+        <title> {`Nova pesem - ${CONFIG.appName}`}</title>
       </Helmet>
-
-      <PesemView />
+      <NovaPesemView />
     </>
   );
 }
