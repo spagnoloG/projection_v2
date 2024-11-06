@@ -44,7 +44,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api', require('./routes/index'));
 app.use('/lyrics', require('./routes/lyrics'));
 app.use('/lyricsit', require('./routes/lyricsit'));
-app.use('/lyricsc', require('./routes/lyricsC'));
+app.use('/lyricsc', require('./routes/lyrics-category'));
 app.use('/playlists', require('./routes/playlists'));
 app.use('/state', require('./routes/appState'));
 

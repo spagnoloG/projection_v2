@@ -10,12 +10,14 @@ exports.lyrics_new_lyric = (req, res, next) => {
 
     db("lyrics")
         .insert(lyric)
+        .returning("_id") 
         .then((result) => {
+            const insertedId = result[0]._id;
             res.status(201).json({
                 message: "Lyric stored",
                 request: {
                     type: "GET",
-                    url: req.get("host") + "/lyrics/" + result._id,
+                    url: req.get("host") + "/lyrics/" + insertedId,
                 },
             });
         })
