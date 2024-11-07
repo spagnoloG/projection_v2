@@ -13,6 +13,7 @@ export const HomePage = lazy(() => import('src/pages/home'));
 export const PesmiPage = lazy(() => import('src/pages/pesmi'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const NovaPesemPage = lazy(() => import('src/pages/nova-pesem'));
+export const UrediPesemPage = lazy(() => import('src/pages/uredi-pesem'));
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +44,8 @@ export function Router() {
         { element: <HomePage />, index: true },
         { path: 'pesmi', element: <PesmiPage /> },
         { path: 'nova-pesem', element: <NovaPesemPage /> },
+        { path: 'uredi-pesem/:id', element: <UrediPesemPage /> },
+
       ],
     },
     {

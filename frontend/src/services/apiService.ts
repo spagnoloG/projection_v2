@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Lyric, LyricPost } from '../types';
+import { Lyric, LyricPost, RawLyric} from '../types';
 
 const API_BASE_URL = 'http://localhost:4200/';
 
@@ -26,6 +26,13 @@ apiClient.interceptors.response.use(
   }
 );
 
+function parseLyricContent(lyric: RawLyric): Lyric {
+  return {
+    ...lyric,
+    content: JSON.parse(lyric.content), // Convert content JSON string to an object
+  };
+}
+
 export const FetchLyrics = async (): Promise<Lyric[]> => {
   try {
     const response = await apiClient.get('/lyrics');
@@ -35,20 +42,38 @@ export const FetchLyrics = async (): Promise<Lyric[]> => {
   }
 };
 
+export const FetchLyricById = async (id: string): Promise<Lyric> => {
+  try {
+    const response = await apiClient.get(`/lyrics/${id}`);
+    const rawLyric: RawLyric = response.data.lyric[0];
+    return parseLyricContent(rawLyric); // Convert to Lyric with parsed content
+  } catch (error) {
+    throw new Error(`Failed to fetch lyric with ID: ${id}`);
+  }
+}
+
+export const PatchLyric = async (id: string, lyric: LyricPost): Promise<Lyric> => {
+  try {
+    const response = await apiClient.patch(`/lyrics/${id}`, lyric);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to patch lyric with ID: ${id}`);
+  }
+}
+
+export const DeleteLyric = async (id: string): Promise<void> => {
+  try {
+    await apiClient.delete(`/lyrics/${id}`);
+  } catch (error) {
+    throw new Error(`Failed to delete lyric with ID: ${id}`);
+  }
+}
+
 export const PostLyric = async (lyric: LyricPost) => {
   try {
     const response = await apiClient.post('/lyrics', lyric);
     return response.data;
   } catch (error) {
     throw new Error('Failed to post lyric');
-  }
-};
-
-export const FetchLyricById = async (id: string) => {
-  try {
-    const response = await apiClient.get(`/lyrics/${id}`);
-    return response.data;
-  } catch (error) {
-    throw new Error(`Failed to fetch item with ID: ${id}`);
   }
 };

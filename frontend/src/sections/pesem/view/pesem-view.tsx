@@ -60,7 +60,7 @@ export function PesemView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Pesmi
+          Pesmi 🎵
         </Typography>
         <Button
           variant="contained"

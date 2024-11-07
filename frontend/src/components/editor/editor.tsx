@@ -1,5 +1,5 @@
-import { forwardRef } from 'react';
-import { EditorProvider, useCurrentEditor } from '@tiptap/react';
+import { forwardRef, useEffect } from 'react';
+import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Box from '@mui/material/Box';
 import type { EditorProps } from './types';
@@ -14,19 +14,22 @@ const extensions = [
   }),
 ];
 
-const content = `
-<p>
-    Vnesi
-</p>
-`;
+export const Editor = forwardRef<HTMLDivElement, EditorProps>(({ onUpdate, content, ...props }, ref) => {
+  const editor = useEditor({
+    extensions,
+    content,
+    onUpdate,
+  });
 
-export const Editor = forwardRef<HTMLDivElement, EditorProps>(({ onUpdate, ...props }, ref) => (
-  <Box
-    ref={ref}
-    component={EditorProvider}
-    extensions={extensions}
-    content={content}
-    onUpdate={onUpdate} // Pass the onUpdate prop here
-    {...props}
-  />
-));
+  useEffect(() => {
+    if (editor && content) {
+      editor.commands.setContent(content);
+    }
+  }, [editor, content]);
+
+  return (
+    <Box ref={ref} {...props}>
+      <EditorContent editor={editor} />
+    </Box>
+  );
+});

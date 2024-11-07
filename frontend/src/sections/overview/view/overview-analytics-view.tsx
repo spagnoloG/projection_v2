@@ -44,9 +44,32 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
-        <Grid xs={12} md={6} lg={4}>
-          <AnalyticsOrderTimeline title="Zgodovina" list={_timeline} />
+        <Grid xs={12} sm={6} md={3}>
+          <AnalyticsWidgetSummary
+            title="Se neki"
+            percent={0.3}
+            total={1452941}
+            color="secondary"
+            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-users.svg" />}
+            chart={{
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              series: [56, 47, 40, 62, 73, 30, 23, 54],
+            }}
+          />
         </Grid>
+
+        <Grid xs={12} md={6} lg={4}>
+          <AnalyticsOrderTimeline title="Zadnjih 10 pesmi" list={_timeline} />
+        </Grid>
+
+        <Grid xs={12} md={6} lg={4}>
+          <AnalyticsOrderTimeline title="10 najpogostejsih pesmi" list={_timeline} />
+        </Grid>
+
+        <Grid xs={12} md={6} lg={4}>
+          <AnalyticsOrderTimeline title="DALJINEC" list={_timeline} />
+        </Grid>
+
       </Grid>
     </DashboardContent>
   );

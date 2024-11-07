@@ -1,17 +1,15 @@
 import { useState, useCallback } from 'react';
-
+import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
-import Checkbox from '@mui/material/Checkbox';
-import MenuList from '@mui/material/MenuList';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
-
-import { Label } from 'src/components/label';
+import MenuList from '@mui/material/MenuList';
 import { Iconify } from 'src/components/iconify';
+import { DeleteLyric } from 'src/services/apiService';
 import type { Lyric } from '../../types';
 
 // ----------------------------------------------------------------------
@@ -20,9 +18,10 @@ type LyricTableRowProps = {
   row: Lyric;
   selected: boolean;
   onSelectRow: () => void;
+  onDelete?: (id: string) => void; // Make onDelete optional
 };
 
-export function UserTableRow({ row, selected, onSelectRow }: LyricTableRowProps) {
+export function UserTableRow({ row, selected, onSelectRow, onDelete }: LyricTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -32,6 +31,21 @@ export function UserTableRow({ row, selected, onSelectRow }: LyricTableRowProps)
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
   }, []);
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm('Are you sure you want to delete this lyric?');
+    if (!confirmed) return;
+
+    try {
+      await DeleteLyric(row._id);
+      window.location.reload(); // Refresh the page after deletion
+    } catch (error) {
+      console.error('Failed to delete lyric:', error);
+      alert('Failed to delete the lyric.');
+    } finally {
+      handleClosePopover();
+    }
+  };
 
   return (
     <>
@@ -73,12 +87,12 @@ export function UserTableRow({ row, selected, onSelectRow }: LyricTableRowProps)
             },
           }}
         >
-          <MenuItem onClick={handleClosePopover}>
+          <MenuItem component={Link} to={`/uredi-pesem/${row._id}`}>
             <Iconify icon="solar:pen-bold" />
             Uredi
           </MenuItem>
 
-          <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+          <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
             <Iconify icon="solar:trash-bin-trash-bold" />
             Izbriši
           </MenuItem>

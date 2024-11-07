@@ -8,6 +8,13 @@ export interface Lyric {
   categories: string[];
 }
 
+export type RawLyric = {
+    _id: string;
+    content: string
+    title: string;
+    categories: string[];
+};
+
 export type LyricPost = {
   title: string;
   categories: string[];
