@@ -1,4 +1,4 @@
-import { forwardRef, useEffect } from 'react';
+import { forwardRef, useEffect, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Box from '@mui/material/Box';
@@ -17,13 +17,18 @@ const extensions = [
 export const Editor = forwardRef<HTMLDivElement, EditorProps>(({ onUpdate, content, ...props }, ref) => {
   const editor = useEditor({
     extensions,
-    content,
     onUpdate,
+    // Only enable autofocus if content is not provided (create mode)
+    autofocus: content ? false : 'start',
   });
 
+  const contentSet = useRef(false); // Track if initial content has been set
+
   useEffect(() => {
-    if (editor && content) {
+    if (editor && content && !contentSet.current) {
       editor.commands.setContent(content);
+      contentSet.current = true;
+      editor.commands.focus('end'); // Explicitly set focus after setting initial content
     }
   }, [editor, content]);
 

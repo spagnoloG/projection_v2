@@ -128,7 +128,7 @@ export function UrediPesemView() {
           <Button variant="contained" onClick={addKitica}>
             + Dodaj novo kitico
           </Button>
-          <Button variant="contained" color="primary" onClick={handleSave}>
+          <Button variant="contained" color="inherit" onClick={handleSave}>
             Shrani pesem
           </Button>
         </Box>
