@@ -35,7 +35,16 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   db("lyric-category")
     .select("_id", "category")
-    .then((response) => {
+    .then((docs) => {
+      const response = {
+        count: docs.length,
+        categories: docs.map((doc) => {
+          return {
+            _id: doc._id,
+            category: doc.category,
+          };
+        }),
+      };
       res.status(200).json(response);
     })
     .catch((err) => {

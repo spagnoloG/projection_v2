@@ -18,4 +18,9 @@ export const navData = [
     path: '/pesmi',
     icon: icon('ic-user'),
   },
+  {
+    title: 'Kategorije',
+    path: '/kategorije',
+    icon: icon('ic-user'),
+  },
 ];

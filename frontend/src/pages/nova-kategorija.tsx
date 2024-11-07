@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
 
-import { UrediPesemView } from 'src/routes/uredi-pesem/view';
+import { NovaKategorijaView } from 'src/sections/nova-kategorija/view';
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ export default function Page() {
       <Helmet>
         <title> {`Nova pesem - ${CONFIG.appName}`}</title>
       </Helmet>
-      <UrediPesemView />
+      <NovaKategorijaView />
     </>
   );
 }

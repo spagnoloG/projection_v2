@@ -14,6 +14,8 @@ export const PesmiPage = lazy(() => import('src/pages/pesmi'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const NovaPesemPage = lazy(() => import('src/pages/nova-pesem'));
 export const UrediPesemPage = lazy(() => import('src/pages/uredi-pesem'));
+export const Kategorije = lazy(() => import('src/pages/kategorije'));
+const NovaKategorijaPage = lazy(() => import('src/pages/nova-kategorija'));
 
 // ----------------------------------------------------------------------
 
@@ -45,7 +47,8 @@ export function Router() {
         { path: 'pesmi', element: <PesmiPage /> },
         { path: 'nova-pesem', element: <NovaPesemPage /> },
         { path: 'uredi-pesem/:id', element: <UrediPesemPage /> },
-
+        { path: 'kategorije', element: <Kategorije /> },
+        { path: 'nova-kategorija', element: <NovaKategorijaPage /> },
       ],
     },
     {

@@ -69,7 +69,6 @@ export function OverviewAnalyticsView() {
         <Grid xs={12} md={6} lg={4}>
           <AnalyticsOrderTimeline title="DALJINEC" list={_timeline} />
         </Grid>
-
       </Grid>
     </DashboardContent>
   );

@@ -9,10 +9,10 @@ export interface Lyric {
 }
 
 export type RawLyric = {
-    _id: string;
-    content: string
-    title: string;
-    categories: string[];
+  _id: string;
+  content: string;
+  title: string;
+  categories: string[];
 };
 
 export type LyricPost = {
@@ -33,3 +33,16 @@ export type LyricRowProps = {
   title: string;
   categories: string[];
 };
+
+export interface LyricCategory {
+  _id: number;
+  category: string;
+}
+
+export type LyricCategoryPost = {
+  category: string;
+};
+
+export interface LyricCategoriesResponse {
+  categories: LyricCategory[];
+}

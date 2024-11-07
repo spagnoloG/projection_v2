@@ -36,13 +36,10 @@ export function UrediPesemView() {
     loadLyric();
   }, [id]);
 
-
   const addKitica = () => setKiticas([...kiticas, '']);
 
   const updateKiticaContent = (index: number, content: string) => {
-    setKiticas((prevKiticas) =>
-      prevKiticas.map((kitica, i) => (i === index ? content : kitica))
-    );
+    setKiticas((prevKiticas) => prevKiticas.map((kitica, i) => (i === index ? content : kitica)));
   };
 
   const removeKitica = (index: number) => {
@@ -57,7 +54,7 @@ export function UrediPesemView() {
     setTitleError(false);
 
     if (!id) {
-      console.error("ID is undefined, cannot update.");
+      console.error('ID is undefined, cannot update.');
       return;
     }
 
@@ -109,14 +106,20 @@ export function UrediPesemView() {
         </Box>
         <Box p={3}>
           <Typography variant="h6">Vnesi refren</Typography>
-          <Editor onUpdate={({ editor }) => setChorusContent(editor.getHTML())} content={chorusContent} />
+          <Editor
+            onUpdate={({ editor }) => setChorusContent(editor.getHTML())}
+            content={chorusContent}
+          />
         </Box>
 
         {kiticas.map((kitica, index) => (
           <Box key={index} p={3} display="flex" alignItems="center">
             <Box flexGrow={1}>
               <Typography variant="h6">Vnesi kitico {index + 1}</Typography>
-              <Editor onUpdate={({ editor }) => updateKiticaContent(index, editor.getHTML())} content={kitica} />
+              <Editor
+                onUpdate={({ editor }) => updateKiticaContent(index, editor.getHTML())}
+                content={kitica}
+              />
             </Box>
             <IconButton onClick={() => removeKitica(index)} aria-label="remove kitica">
               -

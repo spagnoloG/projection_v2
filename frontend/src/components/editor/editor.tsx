@@ -14,27 +14,29 @@ const extensions = [
   }),
 ];
 
-export const Editor = forwardRef<HTMLDivElement, EditorProps>(({ onUpdate, content, ...props }, ref) => {
-  const editor = useEditor({
-    extensions,
-    onUpdate,
-    // Only enable autofocus if content is not provided (create mode)
-    autofocus: content ? false : 'start',
-  });
+export const Editor = forwardRef<HTMLDivElement, EditorProps>(
+  ({ onUpdate, content, ...props }, ref) => {
+    const editor = useEditor({
+      extensions,
+      onUpdate,
+      // Only enable autofocus if content is not provided (create mode)
+      autofocus: content ? false : 'start',
+    });
 
-  const contentSet = useRef(false); // Track if initial content has been set
+    const contentSet = useRef(false); // Track if initial content has been set
 
-  useEffect(() => {
-    if (editor && content && !contentSet.current) {
-      editor.commands.setContent(content);
-      contentSet.current = true;
-      editor.commands.focus('end'); // Explicitly set focus after setting initial content
-    }
-  }, [editor, content]);
+    useEffect(() => {
+      if (editor && content && !contentSet.current) {
+        editor.commands.setContent(content);
+        contentSet.current = true;
+        editor.commands.focus('end'); // Explicitly set focus after setting initial content
+      }
+    }, [editor, content]);
 
-  return (
-    <Box ref={ref} {...props}>
-      <EditorContent editor={editor} />
-    </Box>
-  );
-});
+    return (
+      <Box ref={ref} {...props}>
+        <EditorContent editor={editor} />
+      </Box>
+    );
+  }
+);
