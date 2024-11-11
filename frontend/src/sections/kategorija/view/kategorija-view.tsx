@@ -33,21 +33,20 @@ export function KategorijaView() {
   const [filterName, setFilterName] = useState('');
 
   const [categories, setCategories] = useState<LyricCategory[] | null>(null);
-  const [loadLyricsError, setLoadLyricsError] = useState<string | null>(null);
-  const [lyricsLen, setLyricsLen] = useState<number>(0);
+  const [LoadLyricCategoriesError, setLoadLyricCategoriesError] = useState<string | null>(null);
+  const [lyricCategoryLen, setLyricCategoryLen] = useState<number>(0);
 
   useEffect(() => {
-    const loadLyrics = async () => {
+    const loadCategories = async () => {
       try {
         const result = await FetchLyricCategories();
         setCategories(result);
-        console.log(result);
-        setLyricsLen(result.length);
+        setLyricCategoryLen(result.length);
       } catch (err) {
-        setLoadLyricsError(err.message);
+        setLoadLyricCategoriesError(err.message);
       }
     };
-    loadLyrics();
+    loadCategories();
   }, []);
 
   const dataFiltered: LyricCategory[] = applyFilter({
@@ -133,7 +132,7 @@ export function KategorijaView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={lyricsLen}
+          count={lyricCategoryLen}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}

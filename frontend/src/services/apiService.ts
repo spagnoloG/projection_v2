@@ -95,6 +95,15 @@ export const FetchLyricCategories = async (): Promise<LyricCategory[]> => {
   }
 };
 
+export const FetchLyricCategoryById = async (id: number): Promise<LyricCategory> => {
+  try {
+    const response = await apiClient.get<LyricCategory>(`/lyricsc/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to fetch lyric category with ID: ${id}`);
+  }
+};
+
 export const CreateLyricCategory = async (category: LyricCategoryPost): Promise<void> => {
   try {
     await apiClient.post('/lyricsc', category);

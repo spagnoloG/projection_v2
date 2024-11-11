@@ -86,11 +86,6 @@ export function UserTableRow({ row, selected, onSelectRow, onDelete }: LyricTabl
             },
           }}
         >
-          <MenuItem component={Link} to={`/uredi-kategorijo/${String(row._id)}`}>
-            <Iconify icon="solar:pen-bold" />
-            Uredi
-          </MenuItem>
-
           <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
             <Iconify icon="solar:trash-bin-trash-bold" />
             Izbriši

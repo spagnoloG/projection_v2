@@ -1,18 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DashboardContent } from 'src/layouts/dashboard';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Card, Button, IconButton } from '@mui/material';
-import TextField from '@mui/material/TextField';
+import { Card, Button, IconButton, MenuItem, TextField } from '@mui/material';
 import { Editor } from 'src/components/editor/editor';
-import type { LyricPost } from 'src/types';
-import { PostLyric } from 'src/services/apiService';
+import type { LyricCategory, LyricPost } from 'src/types';
+import { PostLyric, FetchLyricCategories } from 'src/services/apiService';
 
 export function NovaPesemView() {
   const [title, setTitle] = useState('');
-  const [titleError, setTitleError] = useState(false); // Error state for title
+  const [titleError, setTitleError] = useState(false);
   const [chorusContent, setChorusContent] = useState('');
   const [kiticas, setKiticas] = useState<string[]>([]);
+  const [categories, setCategories] = useState<LyricCategory[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // New state for selected categories
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const result = await FetchLyricCategories();
+        setCategories(result);
+      } catch (err) {
+        console.error('Failed to load categories:', err);
+        alert('Napaka pri nalaganju kategorij.');
+      }
+    };
+    loadCategories();
+  }, []);
 
   const addKitica = () => setKiticas([...kiticas, '']);
 
@@ -31,9 +45,16 @@ export function NovaPesemView() {
     }
     setTitleError(false);
 
+    const category_names = selectedCategories
+      .map((categoryId) => {
+        const selectedCategory = categories.find((c) => c._id === parseInt(categoryId, 10)); // Provide radix 10
+        return selectedCategory ? selectedCategory.category : null;
+      })
+      .filter((category): category is string => category !== null);
+
     const lyricPost: LyricPost = {
       title,
-      categories: [], // Add categories if needed
+      categories: category_names,
       content: {
         refren: chorusContent,
         kitice: kiticas,
@@ -43,6 +64,8 @@ export function NovaPesemView() {
     try {
       await PostLyric(lyricPost);
       alert('Pesem je bila shranjena!');
+      // redirect to the lyrics page
+      window.location.href = '/pesmi';
     } catch (error) {
       console.error('Napaka pri shranjevanju pesmi:', error);
       alert('Napaka pri shranjevanju pesmi.');
@@ -73,6 +96,33 @@ export function NovaPesemView() {
             helperText={titleError ? 'Naslov pesmi ne sme biti prazen.' : ''}
           />
         </Box>
+
+        {/* Category Selection */}
+        <Box p={3}>
+          <Typography variant="h6">Izberi kategorijo</Typography>
+          <TextField
+            fullWidth
+            select
+            required
+            SelectProps={{
+              multiple: true,
+            }}
+            variant="standard"
+            label="Kategorije"
+            value={selectedCategories}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSelectedCategories(Array.isArray(value) ? (value as string[]) : []);
+            }}
+          >
+            {categories.map((category) => (
+              <MenuItem key={category._id} value={category._id}>
+                {category.category}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box>
+
         <Box p={3}>
           <Typography variant="h6">Vnesi refren</Typography>
           <Editor onUpdate={({ editor }) => setChorusContent(editor.getHTML())} />

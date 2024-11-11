@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
 
-import { UrediPesemView } from 'src/routes/uredi-pesem/view';
+import { UrediPesemView } from 'src/sections/uredi-pesem/view';
 
 // ----------------------------------------------------------------------
 

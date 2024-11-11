@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import { DashboardContent } from 'src/layouts/dashboard';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Card, Button, IconButton } from '@mui/material';
+import { Card, Button, IconButton, MenuItem } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { Editor } from 'src/components/editor/editor';
-import type { LyricPost, Lyric } from 'src/types';
-import { FetchLyricById, PatchLyric } from 'src/services/apiService';
+import type { LyricPost, Lyric, LyricCategory } from 'src/types';
+import { FetchLyricById, PatchLyric, FetchLyricCategories } from 'src/services/apiService';
 
 export function UrediPesemView() {
   const { id } = useParams<{ id: string }>();
@@ -16,16 +16,31 @@ export function UrediPesemView() {
   const [chorusContent, setChorusContent] = useState('');
   const [kiticas, setKiticas] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<LyricCategory[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // New state for selected categories
 
   useEffect(() => {
     const loadLyric = async () => {
       if (!id) return;
       try {
         const lyric = await FetchLyricById(id);
-        console.log(lyric);
         setTitle(lyric.title);
         setChorusContent(lyric.content.refren);
         setKiticas(lyric.content.kitice);
+
+        const fetchedCategories = await FetchLyricCategories();
+        setCategories(fetchedCategories);
+
+        const categoryIds = lyric.categories
+          .map((lyricCategoryName) => {
+            const matchedCategory = fetchedCategories.find(
+              (category) => category.category === lyricCategoryName
+            );
+            return matchedCategory ? String(matchedCategory._id) : null;
+          })
+          .filter((categoryId) => categoryId !== null);
+
+        setSelectedCategories(categoryIds);
       } catch (error) {
         console.error('Failed to load lyric:', error);
         alert('Napaka pri nalaganju pesmi.');
@@ -58,9 +73,16 @@ export function UrediPesemView() {
       return;
     }
 
+    const category_names = selectedCategories
+      .map((categoryId) => {
+        const selectedCategory = categories.find((c) => c._id === parseInt(categoryId, 10)); // Provide radix 10
+        return selectedCategory ? selectedCategory.category : null;
+      })
+      .filter((category): category is string => category !== null);
+
     const lyricPost: LyricPost = {
       title,
-      categories: [],
+      categories: category_names,
       content: {
         refren: chorusContent,
         kitice: kiticas,
@@ -70,6 +92,8 @@ export function UrediPesemView() {
     try {
       await PatchLyric(id, lyricPost);
       alert('Pesem je bila posodobljena!');
+      // redirect to the lyrics page
+      window.location.href = '/pesmi';
     } catch (error) {
       console.error('Napaka pri posodabljanju pesmi:', error);
       alert('Napaka pri posodabljanju pesmi.');
@@ -104,6 +128,32 @@ export function UrediPesemView() {
             helperText={titleError ? 'Naslov pesmi ne sme biti prazen.' : ''}
           />
         </Box>
+        {/* Category Selection */}
+        <Box p={3}>
+          <Typography variant="h6">Izberi kategorijo</Typography>
+          <TextField
+            fullWidth
+            select
+            required
+            SelectProps={{
+              multiple: true,
+            }}
+            variant="standard"
+            label="Kategorije"
+            value={selectedCategories}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSelectedCategories(Array.isArray(value) ? (value as string[]) : []);
+            }}
+          >
+            {categories.map((category) => (
+              <MenuItem key={category._id} value={category._id}>
+                {category.category}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box>
+
         <Box p={3}>
           <Typography variant="h6">Vnesi refren</Typography>
           <Editor

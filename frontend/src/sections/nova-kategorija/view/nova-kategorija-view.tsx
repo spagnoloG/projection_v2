@@ -24,8 +24,10 @@ export function NovaKategorijaView() {
     };
 
     try {
-      alert('Kategorija je bila shranjena!');
       await CreateLyricCategory(lyricCategoryPost);
+      alert('Kategorija je bila shranjena!');
+      // redirect to the categories page
+      window.location.href = '/kategorije';
     } catch (error) {
       console.error('Napaka pri shranjevanju kategorije:', error);
       alert('Napaka pri shranjevanju kategorije.');
