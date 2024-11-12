@@ -7,6 +7,7 @@ import {
   LyricCategoryPost,
   LyricsResponse,
   LyricCategoriesResponse,
+  AppState,
 } from '../types';
 
 const API_BASE_URL = 'http://localhost:4200/';
@@ -117,5 +118,31 @@ export const DeleteLyricCategory = async (categoryName: string): Promise<void> =
     await apiClient.delete(`/lyricsc/${categoryName}`);
   } catch (error) {
     throw new Error(`Failed to delete lyric category with name: ${categoryName}`);
+  }
+};
+
+export const FetchAppState = async (): Promise<AppState> => {
+  try {
+    const response = await apiClient.get<AppState>('/state');
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to fetch app state');
+  }
+};
+
+export const PatchAppState = async (state: AppState): Promise<AppState> => {
+  try {
+    const response = await apiClient.patch<AppState>('/state', state);
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to patch app state');
+  }
+};
+
+export const PostPlayedSong = async (songId: string): Promise<void> => {
+  try {
+    await apiClient.post('/history', { id: songId });
+  } catch (error) {
+    throw new Error('Failed to post played song');
   }
 };

@@ -46,3 +46,14 @@ export type LyricCategoryPost = {
 export interface LyricCategoriesResponse {
   categories: LyricCategory[];
 }
+
+export type AppState = {
+  appName: string;
+  organisation: string;
+  marginLeft: number;
+  marginRight: number;
+};
+
+export type PlayingHistory = {
+  id: string;
+};

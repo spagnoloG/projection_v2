@@ -15,6 +15,7 @@ export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const NovaPesemPage = lazy(() => import('src/pages/nova-pesem'));
 export const UrediPesemPage = lazy(() => import('src/pages/uredi-pesem'));
 export const Kategorije = lazy(() => import('src/pages/kategorije'));
+export const PredvajajPage = lazy(() => import('src/pages/predvajaj'));
 const NovaKategorijaPage = lazy(() => import('src/pages/nova-kategorija'));
 
 // ----------------------------------------------------------------------
@@ -51,6 +52,7 @@ export function Router() {
         { path: 'nova-kategorija', element: <NovaKategorijaPage /> },
       ],
     },
+    { path: 'predvajaj/:id', element: <PredvajajPage /> },
     {
       path: '404',
       element: <Page404 />,

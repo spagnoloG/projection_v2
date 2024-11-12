@@ -47,6 +47,11 @@ export function UserTableRow({ row, selected, onSelectRow, onDelete }: LyricTabl
     }
   };
 
+  const handlePlay = () => {
+    // in the future this will be a socket message
+    window.location.href = `/predvajaj/${row._id}`;
+  };
+
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
@@ -95,6 +100,11 @@ export function UserTableRow({ row, selected, onSelectRow, onDelete }: LyricTabl
           <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
             <Iconify icon="solar:trash-bin-trash-bold" />
             Izbriši
+          </MenuItem>
+
+          <MenuItem>
+            <Iconify onClick={handlePlay} icon="solar:eye-bold" />
+            Predvajaj pesem
           </MenuItem>
         </MenuList>
       </Popover>
