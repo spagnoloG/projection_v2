@@ -26,6 +26,14 @@ exports.up = function (knex) {
       table.specificType("ids", "integer ARRAY");
       table.string("playlistName", 255);
       table.string("playlistDescription", 255);
+    })
+    .then(function () {
+      return knex("app").insert({
+        organisation: "Initial Organisation",
+        appName: "Initial App",
+        marginLeft: 0,
+        marginRight: 0,
+      });
     });
 };
 

@@ -47,6 +47,7 @@ app.use("/lyricsit", require("./routes/lyricsit"));
 app.use("/lyricsc", require("./routes/lyrics-category"));
 app.use("/playlists", require("./routes/playlists"));
 app.use("/state", require("./routes/appState"));
+app.use("/playing-history", require("./routes/playingHistory"));
 
 // Start server
 app.listen(port, () => {

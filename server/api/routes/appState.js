@@ -13,37 +13,6 @@ const appStateController = require("../controllers/appState");
 /**
  * @swagger
  * /state:
- *   post:
- *     summary: Initialize the application state
- *     tags: [AppState]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               appName:
- *                 type: string
- *                 description: Name of the application
- *               organisation:
- *                 type: string
- *                 description: Name of the organization
- *               marginLeft:
- *                 type: integer
- *               marginRight:
- *                 type: integer
- *     responses:
- *       201:
- *         description: Initial app state stored
- *       500:
- *         description: Server error
- */
-router.post("/", appStateController.app_state_on_init);
-
-/**
- * @swagger
- * /state:
  *   get:
  *     summary: Retrieve the current application state
  *     tags: [AppState]
@@ -74,17 +43,10 @@ router.get("/", appStateController.app_state_get_state);
 
 /**
  * @swagger
- * /state/{stateId}:
+ * /state:
  *   patch:
- *     summary: Update the application state by ID
+ *     summary: Update the application state
  *     tags: [AppState]
- *     parameters:
- *       - in: path
- *         name: stateId
- *         schema:
- *           type: integer
- *         required: true
- *         description: ID of the state to update
  *     requestBody:
  *       required: true
  *       content:
@@ -106,6 +68,6 @@ router.get("/", appStateController.app_state_get_state);
  *       500:
  *         description: Server error
  */
-router.patch("/:stateId", appStateController.app_state_update_state);
+router.patch("/", appStateController.app_state_update_state);
 
 module.exports = router;
