@@ -10,6 +10,7 @@ import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import { Iconify } from 'src/components/iconify';
 import { DeleteLyric } from 'src/services/apiService';
+import { connectSocket, setLyricAction } from 'src/services/socketService';
 import type { Lyric } from '../../types';
 
 // ----------------------------------------------------------------------
@@ -18,7 +19,7 @@ type LyricTableRowProps = {
   row: Lyric;
   selected: boolean;
   onSelectRow: () => void;
-  onDelete?: (id: string) => void; // Make onDelete optional
+  onDelete?: (id: string) => void;
 };
 
 export function UserTableRow({ row, selected, onSelectRow, onDelete }: LyricTableRowProps) {
@@ -48,8 +49,8 @@ export function UserTableRow({ row, selected, onSelectRow, onDelete }: LyricTabl
   };
 
   const handlePlay = () => {
-    // in the future this will be a socket message
-    window.location.href = `/predvajaj/${row._id}`;
+    connectSocket();
+    setLyricAction({ currentLyric: row._id });
   };
 
   return (
@@ -102,8 +103,8 @@ export function UserTableRow({ row, selected, onSelectRow, onDelete }: LyricTabl
             Izbriši
           </MenuItem>
 
-          <MenuItem>
-            <Iconify onClick={handlePlay} icon="solar:eye-bold" />
+          <MenuItem onClick={handlePlay}>
+            <Iconify icon="solar:eye-bold" />
             Predvajaj pesem
           </MenuItem>
         </MenuList>

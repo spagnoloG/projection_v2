@@ -61,3 +61,19 @@ export type PlayingHistory = {
 export type SocketState = {
   currentLyric: string;
 };
+
+export type TimeFrameStatistics = {
+  categories: string[];
+  series: number[];
+  total: number; // Total number of rows for the timeframe
+  percentChange: number; // Percentage increase/decrease compared to the previous timeframe
+};
+
+export type Statistics = {
+  monthly: TimeFrameStatistics;
+  daily: TimeFrameStatistics;
+  hourly: TimeFrameStatistics;
+  most_commonly: number[];
+  latest: number[];
+  total: number; // Overall total rows in the playing_history table
+};

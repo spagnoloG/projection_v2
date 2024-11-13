@@ -8,6 +8,7 @@ import {
   LyricsResponse,
   LyricCategoriesResponse,
   AppState,
+  Statistics,
 } from '../types';
 
 const API_BASE_URL = 'http://localhost:4200/';
@@ -141,8 +142,17 @@ export const PatchAppState = async (state: AppState): Promise<AppState> => {
 
 export const PostPlayedSong = async (songId: string): Promise<void> => {
   try {
-    await apiClient.post('/history', { id: songId });
+    await apiClient.post('/playing-history', { song_id: songId });
   } catch (error) {
     throw new Error('Failed to post played song');
+  }
+};
+
+export const FetchPlayingStatistics = async (): Promise<Statistics> => {
+  try {
+    const response = await apiClient.get<Statistics>('/playing-history/statistics');
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to fetch playing statistics');
   }
 };
