@@ -1,6 +1,7 @@
 format:
 	@echo "Formatting code..."
 	@npx prettier --write "./server/**/*.js" --ignore-path 'node_modules'
+	@npx prettier --write "./server/**/*.ts" --ignore-path 'node_modules'
 	@npx prettier --write "./frontend/**/*.tsx" --ignore-path 'node_modules'
 	@npx prettier --write "./frontend/**/*.ts" --ignore-path 'node_modules'
 

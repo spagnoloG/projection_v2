@@ -1,38 +1,46 @@
-const Express = require("express")();
-const Http = require("http").Server(Express);
-const Socketio = require("socket.io")(Http);
-
-var state = {
+"use strict";
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const http_1 = require("http");
+const socket_io_1 = require("socket.io");
+const app = (0, express_1.default)();
+const httpServer = (0, http_1.createServer)(app);
+const io = new socket_io_1.Server(httpServer);
+let state = {
   currentLyric: null,
-  currentPlaylist: null,
 };
-
-Socketio.on("connection", (socket) => {
-  socket.on("remoteMessage", (data) => {
+io.on("connection", (socket) => {
+  socket.on("setLyricAction", (data) => {
     state = data;
     logState();
-    Socketio.emit("onChangedState", state);
+    io.emit("", state);
   });
-  socket.on("remoteScroll", (data) => {
-    Socketio.emit("onScroll", data);
+  socket.on("swipeLeftAction", () => {
+    io.emit("swipeLeft");
   });
-  socket.on("getCurrentState", () => {
+  socket.on("swipeRightAction", () => {
+    io.emit("swipeLeft");
+  });
+  socket.on("stopAction", () => {
+    io.emit("stop");
+  });
+  socket.on("getCurrentStateAction", () => {
     logState();
-    Socketio.emit("onChangedState", state);
+    io.emit("currentState", state);
   });
-  socket.on("refreshDisplay", () => {
+  socket.on("refreshDisplayAction", () => {
     console.log("Refreshing display...");
-    Socketio.emit("onRefresh");
+    io.emit("refreshDisplay");
   });
 });
-
-Http.listen(3000, () => {
+httpServer.listen(3000, () => {
   console.log("Listening at :3000...");
 });
-
 function logState() {
-  console.log("Current lyric: " + state.currentLyric);
-  if (state.currentPlaylist) {
-    console.log("Current playlist: " + state.currentPlaylist);
-  }
+  console.log(`Current lyric: ${state.currentLyric}`);
 }

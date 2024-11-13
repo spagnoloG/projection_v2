@@ -18,6 +18,14 @@ services:
     networks:
       - backend
 
+  web-socket:
+    container_name: web-socket
+    restart: unless-stopped
+    build:
+      context: ./server/socket
+    ports:
+      - "3000:3000"
+
   db:
     image: postgres:17.0-alpine3.20
     restart: always

@@ -1,4 +1,4 @@
-FROM node:15.0-alpine3.10
+FROM node:23-alpine3.19 
 
 WORKDIR /socket
 
