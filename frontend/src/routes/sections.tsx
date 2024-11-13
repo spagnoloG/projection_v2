@@ -52,7 +52,7 @@ export function Router() {
         { path: 'nova-kategorija', element: <NovaKategorijaPage /> },
       ],
     },
-    { path: 'predvajaj/:id', element: <PredvajajPage /> },
+    { path: 'predvajaj', element: <PredvajajPage /> },
     {
       path: '404',
       element: <Page404 />,

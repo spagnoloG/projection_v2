@@ -4,7 +4,11 @@ import { Server, Socket } from "socket.io";
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+  },
+});
 
 interface State {
   currentLyric: string | null;
@@ -17,7 +21,7 @@ let state: State = {
 io.on("connection", (socket: Socket) => {
   socket.on("setLyricAction", (data: State) => {
     state = data;
-    io.emit("", state);
+    io.emit("setLyric", state);
   });
 
   socket.on("swipeLeftAction", () => {

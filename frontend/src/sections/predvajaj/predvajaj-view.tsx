@@ -1,57 +1,158 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { useParams } from 'react-router-dom';
-import { FetchLyricById, FetchAppState } from 'src/services/apiService';
+import { FetchLyricById, FetchAppState, PostPlayedSong } from 'src/services/apiService';
+import {
+  connectSocket,
+  disconnectSocket,
+  onCurrentState,
+  onRefreshDisplay,
+  onSwipeLeft,
+  onSwipeRight,
+  onStop,
+  onSetLyric,
+} from 'src/services/socketService';
 import type { AppState } from 'src/types';
 
+interface State {
+  chorusContent: string;
+  kiticas: string[];
+  currentIndex: number;
+}
+
+type Action =
+  | { type: 'SET_LYRIC'; chorusContent: string; kiticas: string[] }
+  | { type: 'SWIPE_LEFT' }
+  | { type: 'SWIPE_RIGHT' }
+  | { type: 'RESET' }
+  | { type: 'SET_INDEX'; index: number };
+
+const initialState: State = {
+  chorusContent: '',
+  kiticas: [],
+  currentIndex: 0,
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'SET_LYRIC':
+      return {
+        ...state,
+        chorusContent: action.chorusContent,
+        kiticas: action.kiticas,
+        currentIndex: 0,
+      };
+    case 'SWIPE_LEFT':
+      return {
+        ...state,
+        currentIndex:
+          state.currentIndex > 0 ? state.currentIndex - 1 : state.kiticas.length * 2 - 1,
+      };
+    case 'SWIPE_RIGHT':
+      return {
+        ...state,
+        currentIndex:
+          state.currentIndex < state.kiticas.length * 2 - 1 ? state.currentIndex + 1 : 0,
+      };
+    case 'RESET':
+      return initialState;
+    case 'SET_INDEX':
+      return { ...state, currentIndex: action.index };
+    default:
+      return state;
+  }
+}
+
 export function PredvajajView() {
-  const { id } = useParams<{ id: string }>();
-  const [chorusContent, setChorusContent] = useState('');
-  const [kiticas, setKiticas] = useState<string[]>([]);
-  const [app_state, setAppState] = useState<AppState | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const [appState, setAppState] = useState<AppState | null>(null);
 
   useEffect(() => {
-    const loadLyric = async () => {
-      if (!id) return;
+    const loadLyric = async (lyricId: string) => {
       try {
-        const lyric = await FetchLyricById(id);
-        setChorusContent(lyric.content.refren);
-        setKiticas(lyric.content.kitice);
+        const lyric = await FetchLyricById(lyricId);
+        dispatch({
+          type: 'SET_LYRIC',
+          chorusContent: lyric.content.refren,
+          kiticas: lyric.content.kitice,
+        });
       } catch (error) {
         console.error('Failed to load lyric:', error);
         alert('Napaka pri nalaganju pesmi.');
       }
     };
+
     const loadAppState = async () => {
       try {
-        const appState = await FetchAppState();
-        setAppState(appState);
+        const as = await FetchAppState();
+        setAppState(as);
       } catch (error) {
         console.error('Failed to load app state:', error);
         alert('Napaka pri nalaganju nastavitev.');
       }
     };
-    loadLyric();
-    loadAppState();
-  }, [id]);
 
-  const carouselItems = kiticas.flatMap((kitica) => [
+    const logPlayedSong = async () => {
+      try {
+        await PostPlayedSong(state.currentIndex.toString());
+      } catch (error) {
+        console.error('Failed to post played song:', error);
+        alert('Napaka pri pošiljanju igrane pesmi.');
+      }
+    };
+
+    loadAppState();
+    connectSocket();
+
+    onCurrentState((s) => {
+      if (s.currentLyric) {
+        loadLyric(s.currentLyric);
+      }
+    });
+
+    onRefreshDisplay(() => {
+      window.location.reload();
+    });
+
+    onSwipeLeft(() => {
+      dispatch({ type: 'SWIPE_LEFT' });
+    });
+
+    onSwipeRight(() => {
+      console.log('swipe right');
+      dispatch({ type: 'SWIPE_RIGHT' });
+    });
+
+    onStop(() => {
+      dispatch({ type: 'RESET' });
+    });
+
+    onSetLyric((socket_state) => {
+      loadLyric(socket_state.currentLyric);
+      logPlayedSong();
+    });
+
+    return () => {
+      disconnectSocket();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const carouselItems = state.kiticas.flatMap((kitica) => [
     kitica.toUpperCase(),
-    chorusContent.toUpperCase(),
+    state.chorusContent.toUpperCase(),
   ]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'ArrowLeft') {
-      setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : carouselItems.length - 1));
+      dispatch({ type: 'SWIPE_LEFT' });
     } else if (event.key === 'ArrowRight') {
-      setCurrentIndex((prevIndex) => (prevIndex < carouselItems.length - 1 ? prevIndex + 1 : 0));
+      dispatch({ type: 'SWIPE_RIGHT' });
     }
   };
 
-  const marginLeft = app_state?.marginLeft || 0;
-  const marginRight = app_state?.marginRight || 0;
+  const marginLeft = appState?.marginLeft || 0;
+  const marginRight = appState?.marginRight || 0;
   const fontSize = 50;
 
   return (
@@ -80,14 +181,20 @@ export function PredvajajView() {
           maxWidth: `calc(100% - ${marginLeft + marginRight}px)`,
         }}
       >
-        <Typography
-          variant="body1"
-          component="div"
-          mt={2}
-          align="center"
-          sx={{ fontSize: `${fontSize}px`, lineHeight: 1.5 }}
-          dangerouslySetInnerHTML={{ __html: carouselItems[currentIndex] }}
-        />
+        {carouselItems.length > 0 ? (
+          <Typography
+            variant="body1"
+            component="div"
+            mt={2}
+            align="center"
+            sx={{ fontSize: `${fontSize}px`, lineHeight: 1.5 }}
+            dangerouslySetInnerHTML={{ __html: carouselItems[state.currentIndex] }}
+          />
+        ) : (
+          <Typography variant="body1" align="center">
+            No lyric selected.
+          </Typography>
+        )}
       </Box>
     </Box>
   );

@@ -57,3 +57,7 @@ export type AppState = {
 export type PlayingHistory = {
   id: string;
 };
+
+export type SocketState = {
+  currentLyric: string;
+};
