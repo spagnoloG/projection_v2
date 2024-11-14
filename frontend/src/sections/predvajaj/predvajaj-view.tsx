@@ -11,6 +11,7 @@ import {
   onSwipeRight,
   onStop,
   onSetLyric,
+  getCurrentStateAction,
 } from 'src/services/socketService';
 import type { AppState } from 'src/types';
 
@@ -18,19 +19,22 @@ interface State {
   chorusContent: string;
   kiticas: string[];
   currentIndex: number;
+  lyricIndex: string;
 }
 
 type Action =
-  | { type: 'SET_LYRIC'; chorusContent: string; kiticas: string[] }
+  | { type: 'SET_LYRIC'; chorusContent: string; kiticas: string[]; lyricIndex: string }
   | { type: 'SWIPE_LEFT' }
   | { type: 'SWIPE_RIGHT' }
   | { type: 'RESET' }
-  | { type: 'SET_INDEX'; index: number };
+  | { type: 'SET_INDEX'; index: number }
+  | { type: 'SET_LYRIC_INDEX'; index: number };
 
 const initialState: State = {
   chorusContent: '',
   kiticas: [],
   currentIndex: 0,
+  lyricIndex: '',
 };
 
 function reducer(state: State, action: Action): State {
@@ -41,6 +45,7 @@ function reducer(state: State, action: Action): State {
         chorusContent: action.chorusContent,
         kiticas: action.kiticas,
         currentIndex: 0,
+        lyricIndex: action.lyricIndex,
       };
     case 'SWIPE_LEFT':
       return {
@@ -75,6 +80,7 @@ export function PredvajajView() {
           type: 'SET_LYRIC',
           chorusContent: lyric.content.refren,
           kiticas: lyric.content.kitice,
+          lyricIndex: lyricId,
         });
       } catch (error) {
         console.error('Failed to load lyric:', error);
@@ -92,9 +98,11 @@ export function PredvajajView() {
       }
     };
 
-    const logPlayedSong = async () => {
+    const logPlayedSong = async (lyricIndex: string) => {
       try {
-        await PostPlayedSong(state.currentIndex.toString());
+        console.log('Posting played song');
+        console.log('lyricIndex:', lyricIndex);
+        await PostPlayedSong(parseInt(lyricIndex, 10));
       } catch (error) {
         console.error('Failed to post played song:', error);
         alert('Napaka pri pošiljanju igrane pesmi.');
@@ -103,6 +111,7 @@ export function PredvajajView() {
 
     loadAppState();
     connectSocket();
+    getCurrentStateAction();
 
     onCurrentState((s) => {
       if (s.currentLyric) {
@@ -127,9 +136,9 @@ export function PredvajajView() {
       dispatch({ type: 'RESET' });
     });
 
-    onSetLyric((socket_state) => {
-      loadLyric(socket_state.currentLyric);
-      logPlayedSong();
+    onSetLyric(async (socket_state) => {
+      await loadLyric(socket_state.currentLyric);
+      await logPlayedSong(socket_state.currentLyric);
     });
 
     return () => {

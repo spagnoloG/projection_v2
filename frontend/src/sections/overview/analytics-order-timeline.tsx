@@ -10,20 +10,17 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineItem, { timelineItemClasses } from '@mui/lab/TimelineItem';
+import IconButton from '@mui/material/IconButton';
+import { connectSocket, setLyricAction } from 'src/services/socketService';
 
-import { fDateTime } from 'src/utils/format-time';
+import type { Lyric } from 'src/types';
 
 // ----------------------------------------------------------------------
 
 type Props = CardProps & {
   title?: string;
   subheader?: string;
-  list: {
-    id: string;
-    type: string;
-    title: string;
-    time: string | number | null;
-  }[];
+  list: Lyric[];
 };
 
 export function AnalyticsOrderTimeline({ title, subheader, list, ...other }: Props) {
@@ -42,7 +39,7 @@ export function AnalyticsOrderTimeline({ title, subheader, list, ...other }: Pro
         }}
       >
         {list.map((item, index) => (
-          <Item key={item.id} item={item} lastItem={index === list.length - 1} />
+          <Item key={item._id} item={item} lastItem={index === list.length - 1} />
         ))}
       </Timeline>
     </Card>
@@ -53,30 +50,32 @@ export function AnalyticsOrderTimeline({ title, subheader, list, ...other }: Pro
 
 type ItemProps = TimelineItemProps & {
   lastItem: boolean;
-  item: Props['list'][number];
+  item: Lyric;
 };
 
 function Item({ item, lastItem, ...other }: ItemProps) {
+  const handlePlayClick = () => {
+    connectSocket();
+    setLyricAction({ currentLyric: item._id });
+  };
+
   return (
     <TimelineItem {...other}>
       <TimelineSeparator>
-        <TimelineDot
-          color={
-            (item.type === 'order1' && 'primary') ||
-            (item.type === 'order2' && 'success') ||
-            (item.type === 'order3' && 'info') ||
-            (item.type === 'order4' && 'warning') ||
-            'error'
-          }
-        />
+        <TimelineDot color="primary" />
         {lastItem ? null : <TimelineConnector />}
       </TimelineSeparator>
 
       <TimelineContent>
-        <Typography variant="subtitle2">{item.title}</Typography>
+        <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center' }}>
+          {item.title}
+          <IconButton onClick={handlePlayClick} aria-label="play">
+            ▶
+          </IconButton>
+        </Typography>
 
         <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-          {fDateTime(item.time)}
+          {item.categories.join(', ')} {/* Replace this with actual time if available */}
         </Typography>
       </TimelineContent>
     </TimelineItem>

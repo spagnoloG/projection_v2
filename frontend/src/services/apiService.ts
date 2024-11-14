@@ -140,7 +140,7 @@ export const PatchAppState = async (state: AppState): Promise<AppState> => {
   }
 };
 
-export const PostPlayedSong = async (songId: string): Promise<void> => {
+export const PostPlayedSong = async (songId: number): Promise<void> => {
   try {
     await apiClient.post('/playing-history', { song_id: songId });
   } catch (error) {
