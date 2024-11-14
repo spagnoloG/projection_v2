@@ -100,8 +100,6 @@ export function PredvajajView() {
 
     const logPlayedSong = async (lyricIndex: string) => {
       try {
-        console.log('Posting played song');
-        console.log('lyricIndex:', lyricIndex);
         await PostPlayedSong(parseInt(lyricIndex, 10));
       } catch (error) {
         console.error('Failed to post played song:', error);
@@ -128,7 +126,6 @@ export function PredvajajView() {
     });
 
     onSwipeRight(() => {
-      console.log('swipe right');
       dispatch({ type: 'SWIPE_RIGHT' });
     });
 

@@ -1,10 +1,37 @@
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
+import {
+  Box,
+  CardHeader,
+  Card,
+  IconButton,
+  InputBase,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import StopIcon from '@mui/icons-material/Stop';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { DashboardContent } from 'src/layouts/dashboard';
-import { FetchPlayingStatistics, FetchLyricById } from 'src/services/apiService';
-import type { TimeFrameStatistics } from 'src/types';
+import { FetchPlayingStatistics, FetchLyrics, FetchLyricById } from 'src/services/apiService';
+import {
+  connectSocket,
+  swipeLeftAction,
+  swipeRightAction,
+  stopAction,
+  refreshDisplayAction,
+  setLyricAction,
+  onCurrentState,
+  getCurrentStateAction,
+} from 'src/services/socketService';
+import type { TimeFrameStatistics, Lyric, SocketState } from 'src/types';
 
 import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
 import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
@@ -17,8 +44,13 @@ export function OverviewAnalyticsView() {
   const [hourlyStatistics, setHourlyStatistics] = useState<TimeFrameStatistics | null>(null);
   const [topTenPlayedSongs, setTopTenPlayedSongs] = useState<any[]>([]);
   const [tenLatestPlayedSongs, setTenLatestPlayedSongs] = useState<any[]>([]);
+  const [lyrics, setLyrics] = useState<Lyric[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentLyricTitle, setCurrentLyricTitle] = useState<string | null>(null);
 
   useEffect(() => {
+    connectSocket();
+
     const fetchPlayingStatistics = async () => {
       try {
         const result = await FetchPlayingStatistics();
@@ -26,9 +58,6 @@ export function OverviewAnalyticsView() {
         setDailyStatistics(result.daily);
         setHourlyStatistics(result.hourly);
 
-        console.log('Result: ', result);
-
-        // Fetch details for 10 most common and 10 latest songs
         const mostCommonSongs = await Promise.all(
           result.most_commonly.map((songId: number) => FetchLyricById(songId.toString()))
         );
@@ -38,16 +67,52 @@ export function OverviewAnalyticsView() {
           result.latest.map((songId: number) => FetchLyricById(songId.toString()))
         );
         setTenLatestPlayedSongs(latestSongs);
-        console.log('TopTenPlayedSongs: ', topTenPlayedSongs);
-        console.log('TenLatestPlayedSongs: ', tenLatestPlayedSongs);
       } catch (err) {
         console.error('Failed to load playing statistics:', err);
       }
     };
 
+    const fetchLyrics = async () => {
+      try {
+        const lyricsList = await FetchLyrics();
+        setLyrics(lyricsList);
+      } catch (error) {
+        console.error('Failed to fetch lyrics:', error);
+      }
+    };
+
+    const handleCurrentState = async (state: SocketState) => {
+      try {
+        const lyric = await FetchLyricById(state.currentLyric);
+        setCurrentLyricTitle(lyric.title);
+      } catch (error) {
+        console.error('Failed to fetch current lyric:', error);
+      }
+    };
+
     fetchPlayingStatistics();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchLyrics();
+    connectSocket();
+    getCurrentStateAction();
+    onCurrentState(handleCurrentState);
+
+    return () => {
+      // Cleanup socket connection if necessary
+    };
   }, []);
+
+  const handleLyricSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleLyricSelect = (lyricId: string) => {
+    setLyricAction({ currentLyric: lyricId });
+    getCurrentStateAction();
+  };
+
+  const filteredLyrics = lyrics
+    .filter((lyric) => lyric.title.toLowerCase().includes(searchQuery.toLowerCase()))
+    .slice(0, 5); // Limit to the first 5 lyrics
 
   return (
     <DashboardContent maxWidth="xl">
@@ -106,7 +171,44 @@ export function OverviewAnalyticsView() {
         </Grid>
 
         <Grid xs={12} md={6} lg={4}>
-          <AnalyticsOrderTimeline title="DALJINEC" list={[]} />
+          <Card>
+            <CardHeader title="Daljinec" />
+            <Box p={2}>
+              <Typography variant="h6">{currentLyricTitle || 'No song playing'}</Typography>
+              <Box display="flex" alignItems="center" mb={2}>
+                <SearchIcon />
+                <InputBase
+                  placeholder="Search"
+                  value={searchQuery}
+                  onChange={handleLyricSearch}
+                  sx={{ ml: 1, flex: 1 }}
+                />
+              </Box>
+              <List>
+                {filteredLyrics.map((lyric) => (
+                  <ListItem button key={lyric._id} onClick={() => handleLyricSelect(lyric._id)}>
+                    <ListItemText primary={lyric.title} />
+                    <PlayArrowIcon />
+                  </ListItem>
+                ))}
+              </List>
+              <Divider sx={{ my: 2 }} />
+              <Box display="flex" justifyContent="space-between">
+                <IconButton onClick={swipeLeftAction}>
+                  <ArrowLeftIcon />
+                </IconButton>
+                <IconButton onClick={stopAction}>
+                  <StopIcon />
+                </IconButton>
+                <IconButton onClick={refreshDisplayAction}>
+                  <RefreshIcon />
+                </IconButton>
+                <IconButton onClick={swipeRightAction}>
+                  <ArrowRightIcon />
+                </IconButton>
+              </Box>
+            </Box>
+          </Card>
         </Grid>
       </Grid>
     </DashboardContent>
