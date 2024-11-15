@@ -82,6 +82,10 @@ export function OverviewAnalyticsView() {
     };
 
     const handleCurrentState = async (state: SocketState) => {
+      if (!state.currentLyric) {
+        setCurrentLyricTitle('Trenutno se nobena pesem ne izvaja');
+        return;
+      }
       try {
         const lyric = await FetchLyricById(state.currentLyric);
         setCurrentLyricTitle(lyric.title);
@@ -110,6 +114,11 @@ export function OverviewAnalyticsView() {
     getCurrentStateAction();
   };
 
+  const handleStop = () => {
+    stopAction();
+    getCurrentStateAction();
+  };
+
   const filteredLyrics = lyrics
     .filter((lyric) => lyric.title.toLowerCase().includes(searchQuery.toLowerCase()))
     .slice(0, 5); // Limit to the first 5 lyrics
@@ -121,55 +130,6 @@ export function OverviewAnalyticsView() {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid xs={12} sm={6} md={3}>
-          <AnalyticsWidgetSummary
-            title="Mesecno"
-            percent={monthlyStatistics?.percentChange || 0}
-            total={monthlyStatistics?.total || 0}
-            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-bag.svg" />}
-            chart={{
-              categories: monthlyStatistics?.categories || [],
-              series: monthlyStatistics?.series || [],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} sm={6} md={3}>
-          <AnalyticsWidgetSummary
-            title="Dnevno"
-            percent={dailyStatistics?.percentChange || 0}
-            total={dailyStatistics?.total || 0}
-            color="secondary"
-            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-users.svg" />}
-            chart={{
-              categories: dailyStatistics?.categories || [],
-              series: dailyStatistics?.series || [],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} sm={6} md={3}>
-          <AnalyticsWidgetSummary
-            title="Urno"
-            percent={hourlyStatistics?.percentChange || 0}
-            total={hourlyStatistics?.total || 0}
-            color="secondary"
-            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-users.svg" />}
-            chart={{
-              categories: hourlyStatistics?.categories.reverse() || [],
-              series: hourlyStatistics?.series.reverse() || [],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={4}>
-          <AnalyticsOrderTimeline title="Zadnjih 10 pesmi" list={tenLatestPlayedSongs} />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={4}>
-          <AnalyticsOrderTimeline title="10 najpogostejsih pesmi" list={topTenPlayedSongs} />
-        </Grid>
-
         <Grid xs={12} md={6} lg={4}>
           <Card>
             <CardHeader title="Daljinec" />
@@ -178,7 +138,7 @@ export function OverviewAnalyticsView() {
               <Box display="flex" alignItems="center" mb={2}>
                 <SearchIcon />
                 <InputBase
-                  placeholder="Search"
+                  placeholder="Išči pesem"
                   value={searchQuery}
                   onChange={handleLyricSearch}
                   sx={{ ml: 1, flex: 1 }}
@@ -197,7 +157,7 @@ export function OverviewAnalyticsView() {
                 <IconButton onClick={swipeLeftAction}>
                   <ArrowLeftIcon />
                 </IconButton>
-                <IconButton onClick={stopAction}>
+                <IconButton onClick={handleStop}>
                   <StopIcon />
                 </IconButton>
                 <IconButton onClick={refreshDisplayAction}>
@@ -209,6 +169,55 @@ export function OverviewAnalyticsView() {
               </Box>
             </Box>
           </Card>
+        </Grid>
+
+        <Grid xs={12} md={6} lg={4}>
+          <AnalyticsOrderTimeline title="Zadnjih 10 pesmi" list={tenLatestPlayedSongs} />
+        </Grid>
+
+        <Grid xs={12} md={6} lg={4}>
+          <AnalyticsOrderTimeline title="10 najpogostejsih pesmi" list={topTenPlayedSongs} />
+        </Grid>
+
+        <Grid xs={12} sm={6} md={3}>
+          <AnalyticsWidgetSummary
+            title="Mesecno"
+            percent={monthlyStatistics?.percentChange || 0}
+            total={monthlyStatistics?.total || 0}
+            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-message.svg" />}
+            chart={{
+              categories: monthlyStatistics?.categories || [],
+              series: monthlyStatistics?.series || [],
+            }}
+          />
+        </Grid>
+
+        <Grid xs={12} sm={6} md={3}>
+          <AnalyticsWidgetSummary
+            title="Dnevno"
+            percent={dailyStatistics?.percentChange || 0}
+            total={dailyStatistics?.total || 0}
+            color="secondary"
+            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-bag.svg" />}
+            chart={{
+              categories: dailyStatistics?.categories || [],
+              series: dailyStatistics?.series || [],
+            }}
+          />
+        </Grid>
+
+        <Grid xs={12} sm={6} md={3}>
+          <AnalyticsWidgetSummary
+            title="Urno"
+            percent={hourlyStatistics?.percentChange || 0}
+            total={hourlyStatistics?.total || 0}
+            color="info"
+            icon={<img alt="icon" src="/assets/icons/glass/ic-glass-users.svg" />}
+            chart={{
+              categories: hourlyStatistics?.categories.reverse() || [],
+              series: hourlyStatistics?.series.reverse() || [],
+            }}
+          />
         </Grid>
       </Grid>
     </DashboardContent>

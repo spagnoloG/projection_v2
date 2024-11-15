@@ -15,8 +15,9 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
-import type { Lyric, LyricCategory } from 'src/types';
+import type { LyricCategory } from 'src/types';
 import { FetchLyricCategories } from 'src/services/apiService';
+import CategoryIcon from '@mui/icons-material/Category';
 
 import { TableNoData } from '../table-no-data';
 import { UserTableRow } from '../kategorija-table-row';
@@ -61,7 +62,7 @@ export function KategorijaView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Kategorije ⛞
+          Kategorije <CategoryIcon />
         </Typography>
         <Button
           variant="contained"

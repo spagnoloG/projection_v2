@@ -14,6 +14,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+import LyricsIcon from '@mui/icons-material/Lyrics';
 
 import { TableNoData } from '../table-no-data';
 import { UserTableRow } from '../pesem-table-row';
@@ -60,7 +61,7 @@ export function PesemView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Pesmi 🎵
+          Pesmi <LyricsIcon />
         </Typography>
         <Button
           variant="contained"

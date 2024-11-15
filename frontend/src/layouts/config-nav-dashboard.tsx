@@ -1,26 +1,23 @@
-import { Label } from 'src/components/label';
-import { SvgColor } from 'src/components/svg-color';
+import LyricsIcon from '@mui/icons-material/Lyrics';
+import CategoryIcon from '@mui/icons-material/Category';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 
 // ----------------------------------------------------------------------
-
-const icon = (name: string) => (
-  <SvgColor width="100%" height="100%" src={`/assets/icons/navbar/${name}.svg`} />
-);
 
 export const navData = [
   {
     title: 'Domov',
     path: '/',
-    icon: icon('ic-analytics'),
+    icon: <AutoGraphIcon />,
   },
   {
     title: 'Pesmi',
     path: '/pesmi',
-    icon: icon('ic-user'),
+    icon: <LyricsIcon />,
   },
   {
     title: 'Kategorije',
     path: '/kategorije',
-    icon: icon('ic-user'),
+    icon: <CategoryIcon />,
   },
 ];

@@ -11,6 +11,7 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineItem, { timelineItemClasses } from '@mui/lab/TimelineItem';
 import IconButton from '@mui/material/IconButton';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { connectSocket, setLyricAction } from 'src/services/socketService';
 
 import type { Lyric } from 'src/types';
@@ -70,7 +71,7 @@ function Item({ item, lastItem, ...other }: ItemProps) {
         <Typography variant="subtitle2" sx={{ display: 'flex', alignItems: 'center' }}>
           {item.title}
           <IconButton onClick={handlePlayClick} aria-label="play">
-            ▶
+            <PlayArrowIcon fontSize="small" />
           </IconButton>
         </Typography>
 
