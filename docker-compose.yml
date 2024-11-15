@@ -1,4 +1,3 @@
-version: '3.7'
 
 networks:
    backend:
@@ -37,5 +36,18 @@ services:
       - '5432:5432'
     volumes: 
       - ./db:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  frontend:
+    container_name: frontend
+    restart: unless-stopped
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - web-socket
     networks:
       - backend
