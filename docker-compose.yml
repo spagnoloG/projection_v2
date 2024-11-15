@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     build:
       context: ./server/api
-    command: sh -c 'echo "running migration..."; cd /api ; yarn migrate; yarn serve'
+    command: sh -c 'echo "waiting for db..."; sleep 10; echo "running migration..."; cd /api; yarn migrate; yarn serve'
     depends_on: 
       - db
     ports:
